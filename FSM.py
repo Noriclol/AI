@@ -1,5 +1,5 @@
 import abc
-from Location import *
+from AllLocations import *
 from Actors import *
 
 
@@ -9,7 +9,7 @@ class StateController:
 
     def __init__(self, agent):
         self.agent = agent
-        self.currentState = None
+        self.currentState = Choose()
         self.stateInput = 0
 
     def Update(self):
@@ -24,9 +24,11 @@ class StateController:
         print("energy" + str(self.agent.energy))
         print("hunger" + str(self.agent.hunger))
         print("money" + str(self.agent.money))
+        print("DOA" + str(self.agent.dead))
 # ParentState
 class State(abc.ABC):
     def __init__(self):
+
         self.stateController = None
 
     @abc.abstractmethod
@@ -52,21 +54,20 @@ class Choose(State):
         self.energy = self.stateController.agent.energy
         self.hunger = self.stateController.agent.hunger
         self.money = self.stateController.agent.money
-        self.location = self.stateController.agent.location.locationName
-        self.home = self.stateController.agent.location.locationName
-        self.workPlace = self.stateController.agent.workplace.locationName
+        self.location = self.stateController.agent.location.name
+        self.home = self.stateController.agent.location.name
+        self.workPlace = self.stateController.agent.workplace.name
 
         th = 4
-        print("Do Gets Called: " + self.stateController.agent.fName)
+        #print("Do Gets Called: " + self.stateController.agent.location.name)
         if self.stateController.agent.dead == True:
             self.Exit(Dead())
         elif self.location == self.home:
+            #print("is home")
             if self.energy > th or self.hunger > th or self.money > th:
-
+                #print("relaxes")
                 self.Exit(Relax())
             else:
-
-                # do what needs to be done(from most important to last)
                 if self.energy < th and self.hunger < th:
                     self.Exit(Eat())
 
@@ -77,31 +78,30 @@ class Choose(State):
                     self.Exit(Clean())
 
                 elif self.money < th <= self.hunger and self.energy < th:
-                    # not enough money, go to work
                     self.Exit(Travel(self.workPlace))
                 else:
-                    print("else gets called twice")
+                    print("ERROR! else gets called twice")
 
-        # if at workplace
-        elif self.location == Workplace():
-            print("im at work")
-            if self.hunger < th or self.energy < th: #if too Hungry or tired
-                self.Exit(Travel(Home))
+
+        elif self.location.type == 2:
+            #print("im at work")
+            if self.hunger < th or self.energy < th:
+                self.Exit(Travel(self.home))
 
             else:
                 self.Exit(Work())
 
-        elif self.location == Recreational():
-            print("im at fun")
-            if self.hunger < th or self.energy < th: #if too Hungry or tired
+        elif self.location.type == 3:
+            #print("im at fun")
+            if self.hunger < th or self.energy < th:
                 self.Exit(Travel(self.home))
-        elif self.location == Store():
+        elif self.location.type == 4:
             if self.energy < th or self.hunger < th:
                 self.Exit(Travel(self.home))
             else:
                 self.Exit(Buy())
         else:
-            print("im lost, walking home")
+            #print("im lost, walking home")
             self.Exit(Travel(self.home))
 
 
@@ -134,9 +134,6 @@ class Travel(State):
         self.stateController.ChangeState(state)
 
 
-# --------------------------------------------------------------#### Home States
-# -------------------------------------------------------------- Sleep
-
 
 class Sleep(State):
     def __init__(self):
@@ -144,8 +141,8 @@ class Sleep(State):
 
 
     def Do(self):
-        self.energy = self.stateController.agent.hunger
-        self.hunger = self.stateController.agent.energy
+        self.energy = self.stateController.agent.energy
+        self.hunger = self.stateController.agent.hunger
 
         if self.hunger < 4:
             self.Exit(Eat())
@@ -163,8 +160,6 @@ class Sleep(State):
         self.stateController.ChangeState(state)
 
 
-# -------------------------------------------------------------- Eat
-
 
 class Eat(State):
     def __init__(self):
@@ -174,14 +169,14 @@ class Eat(State):
     def Do(self):
         self.hunger = self.stateController.agent.hunger
         self.energy = self.stateController.agent.energy
-        self.foodLeft = self.stateController.agent.home.food
+        self.foodLeft = self.stateController.agent.home.package.food
 
         if self.energy < 4 and self.hunger >= 4:
             self.Exit(Sleep())
         elif self.hunger >= 10:
-            self.Exit(Choose)
-        elif self.foodLeft >= 0:
-            Travel(Store())
+            self.Exit(Choose())
+        elif self.foodLeft <= 0:
+            Travel(FindwithTag(4))
         else:
             self.stateController.agent.Eat()
 
@@ -194,7 +189,7 @@ class Eat(State):
     def Exit(self, state):
         self.stateController.ChangeState(state)
 
-# -------------------------------------------------------------- Clean
+
 class Clean(State):
     def __init__(self):
         super().__init__()
@@ -203,11 +198,14 @@ class Clean(State):
     def Do(self):
         self.Energy = self.stateController.agent.hunger
         self.Hunger = self.stateController.agent.energy
+        self.dishes = self.stateController.agent.location.package.dishes
 
         if self.Energy < 4 and self.Hunger < 4:
             self.Exit(Eat())
         elif self.Energy < 4 and self.Hunger >= 4:
             self.Exit(Sleep())
+        elif self.dishes == 0:
+            self.Exit(Choose())
         else:
             self.stateController.agent.Clean()
 
@@ -224,22 +222,27 @@ class Relax(State):
     def Do(self):
         self.hunger = self.stateController.agent.hunger
         self.energy = self.stateController.agent.energy
-        self.dishes = self.stateController.agent.home.dishes
+        self.dishes = self.stateController.agent.location.package.dishes
 
 
         if self.energy <= 0:
             self.Exit(Dead())
+
         elif self.hunger <= 0:
             self.Exit(Dead())
+
         elif self.energy < 4 or self.hunger < 4 or self.dishes > 4:
-            if self.energy < 4 and self.hunger < 4:
+            if self.hunger < 4:
                 self.Exit(Eat())
+
             elif self.energy < 4:
                 self.Exit(Sleep())
+
             elif self.dishes > 4:
                 self.Exit(Clean())
+            else:
+                print("yo mama gay as hell")
         else:
-            # self.stateController.GetStats()
             self.stateController.agent.Relax()
 
 
@@ -249,15 +252,13 @@ class Relax(State):
     def Exit(self, state):
 
         self.stateController.ChangeState(state)
-# -------------------------------------------------------------- ##### Work States
-# -------------------------------------------------------------- Work
 
 class Work(State):
     def __init__(self):
         super().__init__()
 
     def Do(self):
-
+        print("work hard")
         pass
 
     def Enter(self):
@@ -273,7 +274,7 @@ class Slack(State):
         super().__init__()
 
     def Do(self):
-
+        print("slack hard")
         pass
 
     def Enter(self):
@@ -282,14 +283,13 @@ class Slack(State):
     def Exit(self, state):
         self.stateController.ChangeState(state)
 
-# -------------------------------------------------------------- ##### Shop States
 
-class Shop(State):
+class Buy(State):
     def __init__(self):
         super().__init__()
 
     def Do(self):
-
+        print("buy hard")
         pass
 
     def Enter(self):
@@ -305,6 +305,7 @@ class Dead(State):
         super().__init__()
 
     def Do(self):
+        print("die hard")
         print(self.agentName + " has DIED")
         pass
 
@@ -314,8 +315,3 @@ class Dead(State):
 
     def Exit(self, state):
         self.stateController.ChangeState(state)
-
-    # if hungry and sleepy eat food,
-    # if no clean dishes do dishes then eat
-    # if sleepy sleep
-    # if neither do dishes or hang out with friends

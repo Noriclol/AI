@@ -1,4 +1,5 @@
 import FSM
+import MessageHandler
 import numpy as np
 from Location import *
 class Person:
@@ -13,7 +14,9 @@ class Person:
         self.location = currentHome #converted to string for ease of use
         self.home = currentHome
         self.workplace = currentWorkplace
+
         self.stateMachine = FSM.StateController(self)
+        self.msgHandler = MessageHandler.MessageHandler(self)
         self.dead = False
 
     def PersonInit(self):
@@ -54,14 +57,14 @@ class Person:
             print("hunger full: " + str(self.hunger))
 
     def Clean(self):
-        if self.home.dishes <= 0:
+        if self.home.package.dishes <= 0:
             self.energy -= 1
             self.hunger -= 1
-            self.home.CleanDish()
+            self.home.package.CleanDish()
             self.Think("cleaning dishes")
-            self.Think("dishes left: " + self.home.dishes)
+            self.Think("dishes left: " + str(self.home.package.dishes))
         else:
-            print("no dishes left: "  + self.home.dishes)
+            print("no dishes left: "  + str(self.home.package.dishes))
 
     def WorkHard(self):
         self.money += 2

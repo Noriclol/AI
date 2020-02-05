@@ -1,38 +1,13 @@
 import numpy as np
 
+class Package:
+    pass
+class Empty(Package):
+    pass
 
-class Location:
-    def __init__(self, place = "place"):
-        self.locationName = place
-
-
-class Workplace(Location):
-    def __init__(self, place):
+class Home(Package):
+    def __init__(self):
         super().__init__()
-        self.locationName = place
-
-class Store(Location):
-    def __init__(self, place):
-        super().__init__()
-        self.locationName = place
-
-
-class Recreational(Location):
-    def __init__(self, place):
-        super().__init__()
-        self.locationName = place
-
-class RecreationalFree(Location):
-    def __init__(self, place):
-        super().__init__()
-        self.locationName = place
-
-
-
-class Home(Location):
-    def __init__(self, place):
-        super().__init__()
-        self.locationName = place
         self.food = 10
         self.dishes = 0
 
@@ -41,4 +16,11 @@ class Home(Location):
             pass
         else:
             self.dishes -= 1
+
+
+class Location:
+    def __init__(self, place = "place", type = 1, package = None):
+        self.name = place
+        self.type = type
+        self.package = package
 

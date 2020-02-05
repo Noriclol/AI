@@ -19,5 +19,12 @@ class Tag(Enum):
     Home = auto()
 
 class locationType(Enum):
-    House
+    House = auto()
+    Workplace = auto()
+    Recreational = auto()
+    Store = auto()
+
+class Message(Enum):
+    send = auto()
+    recieve = auto()
 

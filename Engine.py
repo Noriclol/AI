@@ -1,7 +1,10 @@
 import time
+import Clock
 import pygame
+from AllLocations import *
 from pygame.color import Color
 from Actors import *
+
 from Location import*
 
 BLUE = Color("blue")
@@ -25,32 +28,25 @@ class Engine:
         currentTime = 0.0
         lastTime = 0.0
         # init
+        gameClock = Clock.Clock()
 
-        houseJeff = Home("Jeffs_House")
-        houseJoe = Home("Joes_House")
-
-        Office = Workplace("Office")
-        Factory = Workplace("WorkPlace")
-
-        Pub = Recreational("Pub")
-
-        Park = RecreationalFree("Park")
 
         Joe = Person(houseJoe, Factory, "joe", "Mama")
         #Jeff = Person(houseJeff, Office, "Jeff", "Bezos")
 
         personlist = [Joe]
         recreationalList = [Pub]
-        recreationalFreeList = [Park]
 
         for person in personlist:
             person.PersonInit()
 
         running = True
         while running:
-
+            gameClock.Tick()
+            gameClock.Time()
             for person in personlist:
                 person.PersonUpdate()
+                person.stateMachine.GetStats()
 
             # clock
             Engine.gameClock = time.monotonic() - START_TIME
