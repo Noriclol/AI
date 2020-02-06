@@ -1,7 +1,10 @@
 import FSM
 import MessageHandler
+import AllActors
 import numpy as np
 from Location import *
+
+
 class Person:
     def __init__(self, currentHome, currentWorkplace, fName = "john", lName = "Smith"):
         print("init Person")
@@ -11,13 +14,18 @@ class Person:
         self.hunger = 10
         self.boredom = 10
         self.energy = 10
-        self.location = currentHome #converted to string for ease of use
+        self.location = currentHome
         self.home = currentHome
         self.workplace = currentWorkplace
+
+        self.PersonalID = AllActors.personlist.__sizeof__()
+        AllActors.personlist.append(self)
 
         self.stateMachine = FSM.StateController(self)
         self.msgHandler = MessageHandler.MessageHandler(self)
         self.dead = False
+
+
 
     def PersonInit(self):
         self.stateMachine.ChangeState(FSM.Choose())
@@ -36,8 +44,8 @@ class Person:
 
     def Travel(self, newLocation):
         self.location = newLocation
-        self.location = self.location.locationName
-        print("traveling to " + self.location.locationName)
+        self.location = self.location
+        print("traveling to " + self.location.name)
 
     def Sleep(self):
         if self.energy < 10:
@@ -47,11 +55,18 @@ class Person:
         else:
             print("sleep full" + str(self.energy))
             pass
-
+    def EatOut(self):
+        if self.hunger < 10:
+            self.hunger += 5
+            self.energy += 1
+            self.Think("nom nom : " + str(self.hunger))
+        else:
+            print("hunger full: " + str(self.hunger))
     def Eat(self):
         if self.hunger < 10:
             self.hunger += 5
             self.energy += 1
+            self.home.package.food -= 1
             self.Think("nom nom : " + str(self.hunger))
         else:
             print("hunger full: " + str(self.hunger))
@@ -84,10 +99,17 @@ class Person:
     def Hangout(self):
         self.Think("Hanging out")
         self.boredom -= 1
+
     def Relax(self):
         self.Think("Relaxing")
         self.hunger -= 1
         self.energy -= 1
+
+    def Buy(self):
+        self.hunger -= 1
+        self.energy -= 1
+        self.home.package.food += 8
+
     def DeadCheck(self):
         if self.hunger <= 0 or self.energy <= 0:
             self.dead = True

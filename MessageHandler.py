@@ -25,21 +25,3 @@ class Message:
     def __init__(self, type):
         self.messageHandler = None
         self.type = type
-
-
-
-class AskToVisit(Message):
-    def __init__(self, type):
-        super.__init__()
-        self.type = type
-
-
-class AskToGoOut(Message):
-    def __init__(self, type):
-        super.__init__()
-        self.type = type
-
-class AskToJoinPerson(Message):
-    def __init__(self, type):
-        super.__init__()
-        self.type = type

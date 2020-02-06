@@ -1,9 +1,9 @@
 import time
 import Clock
 import pygame
-from AllLocations import *
+
 from pygame.color import Color
-from Actors import *
+from AllActors import *
 
 from Location import*
 
