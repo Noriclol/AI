@@ -4,7 +4,7 @@ houseJeff = Location("Jeffs_House", 1, Home())
 houseJoe = Location("Joes_House", 1, Home())
 
 Office = Location("Office", 2, Empty)
-Factory = Location("WorkPlace", 2, Empty)
+Factory = Location("Factory", 2, Empty)
 
 Pub = Location("Pub", 3, Empty)
 

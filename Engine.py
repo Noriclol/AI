@@ -1,9 +1,10 @@
 import time
-import Clock
+import Clock as clk
 import pygame
 
 from pygame.color import Color
-from AllActors import *
+import AllActors
+
 
 from Location import*
 
@@ -28,25 +29,18 @@ class Engine:
         currentTime = 0.0
         lastTime = 0.0
         # init
-        gameClock = Clock.Clock()
 
 
-        Joe = Person(houseJoe, Factory, "joe", "Mama")
-        #Jeff = Person(houseJeff, Office, "Jeff", "Bezos")
-
-        personlist = [Joe]
-        recreationalList = [Pub]
-
-        for person in personlist:
-            person.PersonInit()
+        for person in AllActors.personList:
+            person.EntityInit()
 
         running = True
         while running:
-            gameClock.Tick()
-            gameClock.Time()
-            for person in personlist:
-                person.PersonUpdate()
-                person.stateMachine.GetStats()
+            clk.gameClock.Tick()
+            clk.gameClock.Time()
+            for person in AllActors.personList:
+                person.EntityUpdate()
+                # person.stateMachine.GetStats()
 
             # clock
             Engine.gameClock = time.monotonic() - START_TIME

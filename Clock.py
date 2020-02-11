@@ -18,3 +18,11 @@ class Clock:
 
     def Time(self):
         print("Day " + str(self.days) + "  " + str(self.hours) + ":" + str(self.minutes))
+    def GetHour(self):
+        return self.hours
+
+gameClock = Clock()
+# 0h - 7h home
+# 8h - 17h work
+# 18h - 22h if low on food at home, go store. otherwise go to pub with friends.
+# 22h - 24h home

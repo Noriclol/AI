@@ -1,7 +1,9 @@
 from AllLocations import *
-from Actors import *
+import Actors
 
-Joe = Person(houseJoe, Factory, "joe", "Mama")
+
+personList = []
+
+Joe = Actors.Person(personList, houseJoe, Factory, "joe", "Mama")
 # Jeff = Person(houseJeff, Office, "Jeff", "Bezos")
 
-personlist = [Joe]

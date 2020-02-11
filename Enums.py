@@ -25,6 +25,8 @@ class locationType(Enum):
     Store = auto()
 
 class Message(Enum):
-    send = auto()
-    recieve = auto()
+    AsktoJoin = auto()
+    AsktoMeet = auto()
+    AsktoWait = auto()
+
 

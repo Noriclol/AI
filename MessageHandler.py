@@ -14,7 +14,7 @@ class MessageHandler:
 
         def Send(toPerson, type):
             msg = CreateMsg(type)
-            toPerson.msgHandler.Recieve(toPerson, type)
+            toPerson.msgHandler.Recieve(toPerson.GameID, type)
 
         def Recieve(fromPerson, type):
             pass
