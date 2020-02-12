@@ -2,7 +2,7 @@ import abc
 from AllLocations import *
 from Actors import *
 import Clock as clk
-
+import Thresholds as th
 
 # Main StateController Class
 class StateController:
@@ -22,9 +22,9 @@ class StateController:
         self.currentState.Enter()
 
     def ChoosePreferedState(self):
-        if 0 <= clk.gameClock.GetHour() < 8:
+        if 0 <= clk.gameClock.GetHour() < 7:
             return self.agent.home
-        if 8 <= clk.gameClock.GetHour() < 17:
+        if 7 <= clk.gameClock.GetHour() < 17:
             return self.agent.workplace
         if 17 <= clk.gameClock.GetHour() < 22:
             if self.agent.home.package.food < 10:
@@ -77,18 +77,18 @@ class Choose(State):
         self.workPlace = self.stateController.agent.workplace
 
         th = 4
-        print("Do Gets Called: " + self.stateController.agent.location.name)
+        #print("Do Gets Called: " + self.stateController.agent.location.name)
         if self.stateController.agent.dead == True:
             self.Exit(Dead())
 
         # if at home
         elif self.location.type == 1:
             if self.energy > th or self.hunger > th or self.money > th:
-                if 0 <= clk.gameClock.GetHour() < 7: #if best time
-                    print("is best time" + str(clk.gameClock.GetHour()))
+                if 0 <= clk.gameClock.GetHour() < 7 or 22 <= clk.gameClock.GetHour() < 24: #if best time
+                    #print("is best time" + str(clk.gameClock.GetHour()))
                     self.Exit(Relax())
                 else:
-                    print("is not best time: " + str(clk.gameClock.GetHour()))
+                    #print("is not best time: " + str(clk.gameClock.GetHour()))
                     self.Exit(Travel(self.stateController.ChoosePreferedState()))
             else:
                 if self.energy < th and self.hunger < th:
@@ -110,7 +110,7 @@ class Choose(State):
             # ----------------------------------------------------------- check here for messages
             if self.energy > th or self.hunger > th: #if other needs satisfied
                 print("at Work")
-                if 8 <= clk.gameClock.GetHour() < 17: #if best time
+                if 7 <= clk.gameClock.GetHour() < 17: #if best time
                     print("good time")
                     if self.money < 1000:
                         print("work")
@@ -133,7 +133,7 @@ class Choose(State):
         # if at fun
         elif self.location.type == 3:
             if self.energy > th or self.hunger > th or self.boredom > th:  # if other needs satisfied
-                if 18 <= clk.gameClock.GetHour() < 22 and self.home.package.food < 6: # should check somewhere about if food at home.ll
+                if 17 <= clk.gameClock.GetHour() < 22 and self.home.package.food < 6: # should check somewhere about if food at home.ll
                     if self.money > 5 and self.boredom < 10:
                         self.Exit(Eat)
                     elif self.boredom < 10:
@@ -155,7 +155,7 @@ class Choose(State):
             if self.energy > th or self.hunger > th:  # if other needs satisfied
                 print("ERROR 1")
                 if self.stateController.agent.home.package.food > 7: #have enough food at home
-                    self.Exit(Travel(self.workPlace))
+                    self.Exit(Travel(self.stateController.ChoosePreferedState()))
                 else:
                     print("ERROR 11")
                     self.Exit(Buy())
@@ -207,7 +207,6 @@ class Sleep(State):
 
 
     def Do(self):
-        print("Do")
         self.energy = self.stateController.agent.energy
         self.hunger = self.stateController.agent.hunger
         self.location = self.stateController.agent.location
@@ -231,7 +230,7 @@ class Sleep(State):
                 self.Exit(Choose())
             else:
                 print("sleepwork")
-                self.stateController.agent.SleepWork()
+                self.stateController.agent.Sleep()
 
         
         elif self.location.type == 3: # at fun
@@ -254,7 +253,7 @@ class Sleep(State):
                 self.Exit(Choose())
             else:
 
-                self.stateController.agent.SleepStore()
+                self.stateController.agent.Sleep()
 
 
         else:
@@ -292,7 +291,6 @@ class Eat(State):
                 closestStore = FindwithTag(4)
                 self.Exit(Travel(closestStore))
             else:
-                self.stateController.agent.Think("im putting plate out")
                 self.stateController.agent.Eat()
 
         # ---------------------------------------------Eat WORK
@@ -310,7 +308,6 @@ class Eat(State):
                 elif self.hunger >= 10:
                     self.Exit(Choose())
                 else:
-                    self.stateController.agent.Think("im getting my lunchable")
                     self.stateController.agent.EatWork()
 
         # ---------------------------------------------Eat FUN
@@ -320,7 +317,7 @@ class Eat(State):
                 if self.foodLeft == 0:
                     self.Exit(Travel(FindwithTag(4)))
                 else:
-                    self.Exit(self.home)
+                    self.Exit(Travel(self.home))
 
             else:
                 if self.energy < 4 and self.hunger >= 4:
@@ -328,31 +325,32 @@ class Eat(State):
                 elif self.hunger >= 10:
                     self.Exit(Choose())
                 else:
-                    self.stateController.agent.Think("im getting my lunchable")
                     self.stateController.agent.EatFun()
 
         # ---------------------------------------------Eat STORE
         elif self.location.type == 4:
-
+            print("food gets called at store")
             if self.money < 5:
                 print("i dont have enough money so i will eat at home")
                 if self.foodLeft == 0:
-                    pass
+                    self.Exit(Buy())
                 else:
-
+                    self.Exit(Travel(self.home))
             else:
                 if self.energy < 4 and self.hunger >= 4:
+                    print("self.energy and")
                     self.Exit(Sleep())
                 elif self.hunger >= 10:
+                    print("self.hunger >= 10")
                     self.Exit(Choose())
                 elif self.foodLeft <= 4:
-                    closestStore = FindwithTag(4)
-                    self.Exit(Travel(closestStore))
+                    print("self.foodLeft <= 4:")
+                    self.Exit(Buy())
                 else:
-                    self.stateController.agent.Think("im getting my lunchable")
-                    self.stateController.agent.EatWork()
-
+                    print("eatstore gets called")
+                    self.stateController.agent.EatStore()
         else:
+            print("food called on location without food function")
             pass
 
 
@@ -475,10 +473,9 @@ class Buy(State):
         self.workPlace = self.stateController.agent.workplace
         if self.energy < 4 and self.foodLeft > 6: #im tired and i already have food at home
             self.Exit(Travel(self.home))
-        elif self.hunger < 4:
+        elif self.hunger < 4 and self.foodLeft > 6:
             self.Exit(Eat())
         else:
-            print("buy hard")
             self.stateController.agent.Buy()
 
     def Enter(self):

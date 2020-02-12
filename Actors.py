@@ -159,6 +159,7 @@ class Person(BaseGameEntity):
 
     # ----------------- shop specific
     def Buy(self):
+        self.Think("Buying food")
         self.hunger -= 1
         self.energy -= 1
         self.home.package.food += 8
@@ -167,11 +168,6 @@ class Person(BaseGameEntity):
     def CallFriend(self):
         self.Think("Calling Friend")
         pass
-
-
-
-
-
 
     #-----------------Dead specific
     def DeadCheck(self):

@@ -40,7 +40,8 @@ class Engine:
             clk.gameClock.Time()
             for person in AllActors.personList:
                 person.EntityUpdate()
-                # person.stateMachine.GetStats()
+                person.stateMachine.GetStats()
+                print("_____________________________________")
 
             # clock
             Engine.gameClock = time.monotonic() - START_TIME
