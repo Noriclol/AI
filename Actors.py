@@ -20,8 +20,10 @@ class BaseGameEntity(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def EntityMessageReciever(self):
+    def HandleMessage(self):
         pass
+
+    
 
 class Person(BaseGameEntity):
     def __init__(self ,list, currentHome, currentWorkplace, fName = "john", lName = "Smith"):
@@ -53,8 +55,9 @@ class Person(BaseGameEntity):
         self.stateMachine.Update()
     # Communication
 
-    def EntityMessageReciever(self):
-        pass
+    def HandleMessage(self, message):
+        currentState = self.stateMachine.currentState
+        if currentState == FSM.Travel
 
     def Think(self, text):
         print(self.fName + ": " + text)
@@ -110,14 +113,6 @@ class Person(BaseGameEntity):
             print("hunger full: " + str(self.hunger))
 
     def EatWork(self):
-        if self.hunger < 10:
-            self.hunger += 5
-            self.energy += 5
-            self.Think("nom nom : " + str(self.hunger))
-        else:
-            print("hunger full: " + str(self.hunger))
-
-    def EatShop(self):
         if self.hunger < 10:
             self.hunger += 5
             self.energy += 5
