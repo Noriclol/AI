@@ -1,5 +1,6 @@
 import time
 import Clock as clk
+import MessageHandler as msh
 import pygame
 
 from pygame.color import Color
@@ -38,6 +39,7 @@ class Engine:
         while running:
             clk.gameClock.Tick()
             clk.gameClock.Time()
+            msh.msgHandler.UpdateMsgHandler()
             for person in AllActors.personList:
                 person.EntityUpdate()
                 person.stateMachine.GetStats()

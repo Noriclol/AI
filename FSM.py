@@ -50,6 +50,9 @@ class State(abc.ABC):
         self.stateController = None
 
     @abc.abstractmethod
+    def OnMessage(self):
+        pass
+    @abc.abstractmethod
     def Do(self):
         pass
 
@@ -66,6 +69,14 @@ class Choose(State):
     def __init__(self):
         super().__init__()
 
+    def OnMessage(self, message):
+        self.stateController.agent.HandleMessage(message)
+        if self.stateController.agent.msgHandler.msgInbox[0].type == 1:
+
+        if self.stateController.agent.msgHandler.msgInbox[0].type == 2:
+            pass
+        if self.stateController.agent.msgHandler.msgInbox[0].type == 3:
+            pass
 
     def Do(self):
         self.energy = self.stateController.agent.energy
@@ -137,7 +148,10 @@ class Choose(State):
                     if self.money > 5 and self.boredom < 10:
                         self.Exit(Eat)
                     elif self.boredom < 10:
+
+                        self.stateController.agent.msgHandler.SendMsg(1, self.stateController.agent.GameID, self.stateController.agent.GameID, 0)
                         self.Exit(Relax())
+
                     else:
                         self.Exit(Sleep())
                 else:
@@ -173,7 +187,6 @@ class Choose(State):
         else:
             self.Exit(Travel(self.home))
 
-
     def Enter(self):
         self.energy = None
         self.hunger = None
@@ -191,6 +204,9 @@ class Travel(State):
         super().__init__()
         self.destination = destination
 
+    def OnMessage(self):
+        pass
+
     def Do(self):
         self.Exit(Choose())
 
@@ -205,6 +221,8 @@ class Sleep(State):
     def __init__(self):
         super().__init__()
 
+    def OnMessage(self):
+        pass
 
     def Do(self):
         self.energy = self.stateController.agent.energy
@@ -273,6 +291,8 @@ class Eat(State):
     def __init__(self):
         super().__init__()
 
+    def OnMessage(self):
+        pass
 
     def Do(self):
         self.hunger = self.stateController.agent.hunger
@@ -365,6 +385,8 @@ class Clean(State):
     def __init__(self):
         super().__init__()
 
+    def OnMessage(self):
+        pass
 
     def Do(self):
         self.Energy = self.stateController.agent.hunger
@@ -390,6 +412,9 @@ class Clean(State):
 class Relax(State):
     def __init__(self):
         super().__init__()
+
+    def OnMessage(self):
+        pass
 
     def Do(self):
         self.hunger = self.stateController.agent.hunger
@@ -438,6 +463,9 @@ class Work(State):
     def __init__(self):
         super().__init__()
 
+    def OnMessage(self):
+        pass
+
     def Do(self):
         self.Energy = self.stateController.agent.hunger
         self.Hunger = self.stateController.agent.energy
@@ -462,6 +490,9 @@ class Work(State):
 class Buy(State):
     def __init__(self):
         super().__init__()
+
+    def OnMessage(self):
+        pass
 
     def Do(self):
         self.energy = self.stateController.agent.energy
@@ -496,6 +527,9 @@ class Dead(State):
     def __init__(self):
         super().__init__()
 
+    def OnMessage(self):
+        pass
+
     def Do(self):
         print("die hard")
         print(self.agentName + " has DIED")
@@ -507,3 +541,6 @@ class Dead(State):
 
     def Exit(self, state):
         self.stateController.ChangeState(state)
+
+class Socialize(State):
+

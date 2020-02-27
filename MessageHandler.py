@@ -1,35 +1,52 @@
 from Enums import Message
 
 class MessageHandler:
-    def __init__(self, agent):
-        self.agent = agent
-        self.msgInbox = None
-        self.msgOutbox = None
+    def __init__(self):
+        self.msgInbox = []
 
-    def CreateMsg(self, type):
-        self.message = Message(type)
-        self.message.messageHandler = self
-        self.msgOutbox.append(Message)
+    def UpdateMsgHandler(self):
+        pass
+
+    def SendMsg(self, type, SenderID, RecieverID, Delay, Data=None):
+        self.message = Message(type, SenderID, RecieverID, Delay, Data)
+        if self.message.delay is 0:
+            # send message
+
+            pass
+        else:
+            # send later
+            pass
         return Message
 
-    def GetMsg(self, message):
+    def Send(self, type, toPerson):
+        msg = self.CreateMsg(type, toPerson)
+        toPerson.msgHandler.Recieve(msg)
+
+    def Recieve(self, message):
         self.msgInbox.append(message)
+        pass
 
-    def Send(self, toPerson, type):
-        msg = self.CreateMsg(type)
-        toPerson.msgHandler.Recieve(toPerson.GameID, msg)
-
-    def Recieve(self, fromPerson, message):
-        self.msgInbox.append(fromPerson, message)
-    pass
+    def getRecipiants(self):
+        RecipiantList = []
+        for person in self.agent.list:
+            if person.GameID == self.agent.GameID:
+                pass
+            else:
+                RecipiantList.append(person)
+        return RecipiantList
 
 
 class Message:
-    def __init__(self, type):
-        self.messageHandler = None
-        self.sender = None
-        self.reciever = None
-        self.type = type
+    def __init__(self, Type, SenderID, RecieverID, Delay, Data):
+        self.sender = SenderID
+        self.reciever = RecieverID
+        self.type = Type
+        self.delay = Delay
+        self.data = Data
 
-    def Printmessage(self):
+    def PrintMessage(self):
         print("To: " + str(self.reciever.fName))
+        print("From: " + str(self.sender.fName))
+        print("MessageType: " + str(self.type.fName))
+
+msgHandler = MessageHandler()

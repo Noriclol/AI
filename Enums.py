@@ -26,7 +26,11 @@ class locationType(Enum):
 
 class Message(Enum):
     AsktoJoin = auto()
-    AsktoMeet = auto()
     AsktoWait = auto()
+
+    AsktoMeet = auto()
+    AsktoChat = auto()
+
+    AskForLocation = auto()
 
 

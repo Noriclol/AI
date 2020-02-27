@@ -1,5 +1,6 @@
 import FSM
-import MessageHandler
+import MessageHandler as msh
+import Thresholds as thrs
 import numpy as np
 from Location import *
 import abc
@@ -39,11 +40,12 @@ class Person(BaseGameEntity):
         self.home = currentHome
         self.workplace = currentWorkplace
 
+        self.list = list
         self.GameID = len(list)
         list.append(self)
 
         self.stateMachine = FSM.StateController(self)
-        self.msgHandler = MessageHandler.MessageHandler(self)
+
         self.dead = False
 
 
@@ -57,7 +59,21 @@ class Person(BaseGameEntity):
 
     def HandleMessage(self, message):
         currentState = self.stateMachine.currentState
-        if currentState == FSM.Travel
+        if len(self.msgHandler.msgInbox) < 1:
+            pass
+            if self.msgHandler.msgInbox[0].type == 1:
+                if self.energy <=or self.hunger <=
+                currentState.OnMessage()
+            if self.msgHandler.msgInbox[0].type == 2:
+                currentState.OnMessage()
+            if self.msgHandler.msgInbox[0].type == 3:
+                currentState.OnMessage()
+            if self.msgHandler.msgInbox[0].type == 3:
+                currentState.OnMessage()
+        else:
+            pass
+
+
 
     def Think(self, text):
         print(self.fName + ": " + text)
@@ -160,9 +176,11 @@ class Person(BaseGameEntity):
         self.home.package.food += 8
 
     #------------------ social
-    def CallFriend(self):
+    def CallFriend(self, msgType):
         self.Think("Calling Friend")
-        pass
+        phoneBook = self.msgHandler.getRecipiants()
+        for person in phoneBook:
+            self.msgHandler.Send(person, msgType)
 
     #-----------------Dead specific
     def DeadCheck(self):
