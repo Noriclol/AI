@@ -1,6 +1,6 @@
 import FSM
 import MessageHandler as msh
-import Thresholds as thrs
+import Thresholds as th
 import numpy as np
 from Location import *
 import abc
@@ -62,13 +62,17 @@ class Person(BaseGameEntity):
         if len(self.msgHandler.msgInbox) < 1:
             pass
             if self.msgHandler.msgInbox[0].type == 1:
-                if self.energy <=or self.hunger <=
-                currentState.OnMessage()
+                if self.energy <=th.lowSleep or self.hunger <= th.lowHunger:
+                    pass
+                
+                else:
+                    currentState.OnMessage()
+
             if self.msgHandler.msgInbox[0].type == 2:
                 currentState.OnMessage()
             if self.msgHandler.msgInbox[0].type == 3:
                 currentState.OnMessage()
-            if self.msgHandler.msgInbox[0].type == 3:
+            if self.msgHandler.msgInbox[0].type == 4:
                 currentState.OnMessage()
         else:
             pass

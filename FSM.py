@@ -463,8 +463,15 @@ class Work(State):
     def __init__(self):
         super().__init__()
 
-    def OnMessage(self):
-        pass
+    def OnMessage(self, message):
+        self.Energy = self.stateController.agent.hunger
+        self.Hunger = self.stateController.agent.energy
+        self.money = self.stateController.agent.money
+        if self.Hunger <= th.lowHunger or self.Energy <= th.lowSleep:
+            print("")
+            pass
+        else:
+            self.stateController.agent.msgHandler.HandleMessage(message)
 
     def Do(self):
         self.Energy = self.stateController.agent.hunger
