@@ -1,5 +1,5 @@
 from Enums import Message
-
+import Clock as clk
 class MessageHandler:
     def __init__(self):
         self.msgInbox = []
@@ -13,14 +13,18 @@ class MessageHandler:
             # send message
 
             pass
-        else:
+        elif time == clk.GetTime:
             # send later
+
             pass
         return Message
 
     def Send(self, type, toPerson):
         msg = self.CreateMsg(type, toPerson)
         toPerson.msgHandler.Recieve(msg)
+
+    def Resend(self, msg):
+
 
     def Recieve(self, message):
         self.msgInbox.append(message)

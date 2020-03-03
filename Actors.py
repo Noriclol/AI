@@ -59,21 +59,35 @@ class Person(BaseGameEntity):
 
     def HandleMessage(self, message):
         currentState = self.stateMachine.currentState
-        if len(self.msgHandler.msgInbox) < 1:
+        if len(msh.msgHandler.msgInbox) < 1:
             pass
-            if self.msgHandler.msgInbox[0].type == 1:
+            if msh.msgHandler.msgInbox[0].type == 1:
                 if self.energy <=th.lowSleep or self.hunger <= th.lowHunger:
-                    pass
-                
+                    msh.msgHandler.Send()
+                    print("Busy, resend to self")
                 else:
                     currentState.OnMessage()
+                    if self.location.type == msh.msgHandler.msgInbox[0].sender.location.type:
+                        pass
+                    elif self.location.type == msh.msgHandler.msgInbox[0].sender.location.type:
+                        pass
+                    else:
+                        pass
 
-            if self.msgHandler.msgInbox[0].type == 2:
+            elif self.msgHandler.msgInbox[0].type == 2:
+                if self.location.type == 1:
+                    pass
+                elif self.location.type == 2:
+                    pass
+                elif self.location.type == 3:
+                    pass
+                elif self.location.type == 4:
+                    pass
+                else:
+                    pass
                 currentState.OnMessage()
-            if self.msgHandler.msgInbox[0].type == 3:
-                currentState.OnMessage()
-            if self.msgHandler.msgInbox[0].type == 4:
-                currentState.OnMessage()
+            else:
+                pass
         else:
             pass
 

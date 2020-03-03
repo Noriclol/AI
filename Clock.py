@@ -15,9 +15,14 @@ class Clock:
             self.hours = 0
             self.days += 1
 
+    def __eq__ (self, other):
+        if self.minutes == other.minutes and self.hours == other.hours
 
-    def Time(self):
+    def PrintTime(self):
         print("Day " + str(self.days) + "  " + str(self.hours) + ":" + str(self.minutes))
+    def GetTime(self):
+        time = (self.hours, self.minutes)
+        return self.days
     def GetHour(self):
         return self.hours
 

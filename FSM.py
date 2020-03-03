@@ -550,4 +550,4 @@ class Dead(State):
         self.stateController.ChangeState(state)
 
 class Socialize(State):
-
+    pass
